@@ -1,20 +1,18 @@
 # Qwen3 Dockerized Chat Inference
 
-This repository provides a minimal FastAPI service for chatting with a Qwen3 model through an OpenAI-compatible API. The service is containerized with Docker for easy deployment.
+This repository provides a minimal FastAPI service for chatting with a locally hosted Qwen model through an OpenAI-compatible chat format. The service downloads a Hugging Face model at startup and serves a simple `/chat` endpoint.
 
 ## Requirements
 - Docker
-- A Qwen-compatible API endpoint (DashScope compatible) and API key
+- Access to download the selected Qwen model from Hugging Face
 
 ## Environment variables
-- `QWEN_API_KEY` (**required**): API key for the Qwen endpoint.
-- `QWEN_BASE_URL` (optional): Base URL for the compatible endpoint. Defaults to `https://dashscope.aliyuncs.com/compatible-mode/v1`.
-- `QWEN_MODEL` (optional): Default model name. Defaults to `qwen3-instruct` when not provided in the request body.
+- `QWEN_MODEL` (optional): Model name or local path. Defaults to `Qwen/Qwen2.5-0.5B-Instruct`.
 
 ## Build and run with Docker
 ```bash
 docker build -t qwen3-chat .
-docker run -it --rm -p 8000:8000 -e QWEN_API_KEY="<your_key>" qwen3-chat
+docker run -it --rm -p 8000:8000 -e QWEN_MODEL="Qwen/Qwen2.5-0.5B-Instruct" qwen3-chat
 ```
 
 The service exposes:
@@ -35,7 +33,7 @@ curl -X POST "http://localhost:8000/chat" \
       }'
 ```
 
-The response will contain the assistant reply and the model name used.
+The response contains the assistant reply and the model name used. Set `QWEN_MODEL` to point at any compatible Qwen chat model (local path or Hugging Face repository). If you need GPU acceleration, ensure Docker is configured with GPU support and that the model fits in GPU memory.
 
 ## Local development (optional)
 If you prefer running without Docker, install dependencies and start the server:
